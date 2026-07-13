@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ruim2rxnorm"
+version = "0.1.0"
+description = "Map native French drug (brand) names to RxNorm ingredients via ATC, for OMOP CDM integration."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "ruim2rxnorm contributors" }]
+keywords = ["OMOP", "RxNorm", "ATC", "RUIM", "ANSM", "drug-mapping", "vocabulary"]
+# Core is standard-library only (csv, unicodedata, argparse, importlib.resources).
+dependencies = []
+
+[project.scripts]
+ruim2rxnorm = "ruim2rxnorm.cli:main"
+ruim2rxrisk = "ruim2rxnorm.rxrisk_cli:main"
+# Dev convenience: rebuild the Sphinx docs (needs the `docs` group installed).
+ruim2rxnorm-docs = "ruim2rxnorm.docs_build:main"
+
+# Development / build tooling, managed by uv as dependency groups (PEP 735).
+# `uv sync` installs `dev` by default; docs tooling is opt-in via `--group docs`.
+[dependency-groups]
+dev = ["pytest>=7"]
+docs = ["sphinx>=7"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ruim2rxnorm*"]
+
+[tool.setuptools.package-data]
+# Ship only the compact ETL-built reference data. The source vocabularies (Athena
+# and the RUIM CSVs) are NOT vendored — they are downloaded by the user and read
+# solely by the offline build-refs ETL (see PROVENANCE.md / README).
+"ruim2rxnorm" = [
+    "refs/*.csv",
+    "refs/*.json",
+    "PROVENANCE.md",
+]

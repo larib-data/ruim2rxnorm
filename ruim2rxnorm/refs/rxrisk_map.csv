@@ -1,0 +1,53 @@
+condition,atc_include,atc_exclude,icd10,is_new,notes
+Alcohol dependency,N07BB,,,,
+Allergies,R06,,,,"R06 injection/RPBS-only restriction dropped (no route/PBS data in French input)"
+Anticoagulants,B01A,B01AC;B01AD,,,
+Antiepileptics,N03A,N03AX16,G40,,"ICD-10 via Table 2 'Epilepsy'"
+Antiplatelets,B01AC,B01AC09;B01AC11;B01AC27,,,
+Antipsychotics,N05A,N05AB04;N05AN01,,,
+Anxiety/Sedative,N05B;N05C,,,,
+Arrhythmia,C01AA05;C01B;C07AA07,,,,
+Benign prostatic hyperplasia (BPH),G04C,,,,"male-only restriction dropped (no sex input)"
+Bipolar disorder,N05AN01,,F31,,
+Chronic airways disease,R03,,J44;J45,,
+Congestive heart failure,C01EB17;C03DA01;C03DA04;C07AB02;C07AB07;C07AB12;C07AG02;C09DX04,,I50,,"combination rule C03CA+(C07AB|C07AG|C09A|C09C) dropped (needs full medicine list); ICD-10 via Table 2 'Heart failure'"
+Constipation,A06,,,1,NEW
+Cystic fibrosis,R07AX02;R07AX30;R07AX31;R05CB13,,,1,NEW
+Dementia,N06D,,G30;F00-F03,,
+Depression,N06A,N06AX12,F3;F4,,
+Glaucoma,S01E,,H40;H41;H42,,
+Gastroesophageal reflux disease (GORD),A02B,,,,
+Gout,M04,,M10,,
+Diabetes,A10,,E10-E14,,
+Hepatitis B,J05AF05;J05AF07;J05AF08;J05AF10,,,,"J05AF05 100mg-tablet PBS indication restriction dropped; overlaps HIV (J05AF)"
+Hepatitis C,J05AP,,,,"Authority-code restriction dropped"
+Human immunodeficiency virus (HIV),J05AE;J05AF;J05AG;J05AJ;J05AR;J05AX07;J05AX09,,,,"Authority-code restrictions dropped; J05AF overlaps Hepatitis B"
+Hypothyroidism,H03AA,,,,
+Hyperthyroidism,H03B,,,,
+Ischaemic heart disease (IHD): angina,C01DA02-C01DA14;C01DX16;C08EX02,,I20,,
+Liver disease,A07AA11;A05AA02,,,,
+Hyperlipidaemia,C10,,E78,,
+Hypertension,C02;C03;C07;C08;C09,C02KX,I10-I15,,"PBS item-code footnote (f) and C03/C09 CHF carve-out (footnotes d,e) dropped; removed IHD (hypertension-specific) merged here"
+Hyperkalaemia,V03AE01,,,,
+Incontinence,G04BD;A03AB05,,,,
+Inflammation/pain,M01A,,,,
+Inflammatory - glucocorticoids,H02AB,,,,
+Inflammatory autoimmune diseases,A07EC01-A07EC04;A07EA01-A07EA02;A07EA06;L04AA33;L04AC16;L04AC17;L04AC18;L04AC05;L04AC10;L04AC13;L04AB01;L04AB02;L04AB04;L04AB05;L04AB06;L04AX03;L04AA07;L04AA13;L04AA24;L04AA29;L04AA37;M01C;P01BA02,,M32;M05;M06;M08;M353;M45;L40;K50;K51,1,"NEW; cross-condition exclusion (CHF/IHD-angina medicines) dropped"
+Macular degeneration,S01LA,,H353,1,NEW
+Malignancies,L01,,C00-C96;Z511;Z510,,
+Migraine,N02C,,G43,,
+Multiple sclerosis,L03AB07;L03AB08;L03AB13;L03AX13;L04AA23;L04AA27;L04AA31;L04AA34;L04AA36;L04AA40;L04AA42;L04AX07,,,1,NEW
+Myasthenia gravis,N07AA02,,,1,NEW
+Opioid dependence,N07BC,,,1,NEW
+Osteoporosis/Paget's,M05B;G03XC01;H05AA02,,M80;M81;M82,,
+Pain - Opioid,N02A,,,,
+Pain - Gabapentinoid,N03AX16;N03AX12,,,1,"NEW; gabapentin (N03AX12) RPBS-only restriction dropped"
+Pain - Paracetamol,N02BE01,,,1,NEW
+Pancreatic insufficiency,A09AA02,,,,
+Parkinsons/Restless leg syndrome (RLS),N04,,,,
+Psoriasis,D05,,L40,,
+Pulmonary hypertension,C02KX;G04BE03;G04BE08;B01AC09;B01AC11;B01AC27,,,,"G04BE08 RPBS-list exclusion dropped; B01AC09/11/27 shared with Antiplatelets exclusion"
+Renal disease,B03XA01-B03XA03;V03AE02;V03AE03;V03AE05,,Z49;N184;N185,,"ICD-10 via Table 2 'Renal failure'"
+Smoking cessation,N07BA01-N07BA03;N06AX12,,,,
+Transplant,L04AD;L04AA06;L04AA10;L04AA18,,Z940-Z944;Z948;Z949,,
+Tuberculosis (TB),J04AC;J04AM,,,,

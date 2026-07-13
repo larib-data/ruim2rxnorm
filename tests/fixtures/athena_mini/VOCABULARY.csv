@@ -1,0 +1,5 @@
+vocabulary_id	vocabulary_name	vocabulary_reference	vocabulary_version	vocabulary_concept_id
+ATC	WHO ATC	http://who	ATC 2026-02-01	44819117
+RxNorm	RxNorm (NLM)	http://nlm	RxNorm 20260105	44819104
+RxNorm Extension	OMOP RxNorm Extension	OMOP	RxNorm Extension 2026-01-14	252
+None	OMOP Standardized Vocabularies	OMOP	v5.0 27-FEB-26	44819096

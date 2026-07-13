@@ -1,0 +1,40 @@
+{
+  "tool": "ruim2rxnorm",
+  "tool_version": "0.1.0",
+  "built_at": "2026-07-13T08:58:05+00:00",
+  "athena_dir": "/home/jaj/Desktop/tmp/RUIM/athena_vocabulary",
+  "ruim_dir": "/home/jaj/Desktop/tmp/RUIM/terminologie-ref_interop_med-2026-06/dat/terminologie-ref_interop_med-2026-06_csv_files",
+  "vocabularies": [
+    "ATC",
+    "RxNorm",
+    "RxNorm Extension"
+  ],
+  "vocabulary_versions": {
+    "ATC": "ATC 2026-02-01",
+    "RxNorm": "RxNorm 20260105",
+    "RxNorm Extension": "RxNorm Extension 2026-01-14",
+    "None": "v5.0 27-FEB-26"
+  },
+  "relationships_kept": [
+    "ATC - RxNorm pr lat",
+    "ATC - RxNorm pr up",
+    "ATC - RxNorm sec lat",
+    "Maps to",
+    "Subsumes"
+  ],
+  "relationship_excluded": [
+    "ATC - RxNorm sec up"
+  ],
+  "row_counts": {
+    "brand_ingredient_map.csv": 11391
+  },
+  "distinct_brand_keys": 8755,
+  "specialities": 15922,
+  "ingredient_rows_mapped": 8713,
+  "ingredient_rows_unmapped": 2678,
+  "coverage": {
+    "specialities_reached": 15035,
+    "specialities_total": 15922,
+    "specialities_reached_share": 0.9443
+  }
+}

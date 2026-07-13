@@ -1,0 +1,14 @@
+concept_id	concept_name	domain_id	vocabulary_id	concept_class_id	standard_concept	concept_code	valid_start_date	valid_end_date	invalid_reason
+21600001	paracetamol	Drug	ATC	ATC 5th	C	N02BE01	1970-01-01	2099-12-31	
+21600002	perindopril	Drug	ATC	ATC 5th	C	C09AA04	1970-01-01	2099-12-31	
+21600003	amlodipine	Drug	ATC	ATC 5th	C	C08CA01	1970-01-01	2099-12-31	
+21600004	perindopril and amlodipine	Drug	ATC	ATC 5th	C	C09BB04	1970-01-01	2099-12-31	
+21600005	ACE inhibitors, plain	Drug	ATC	ATC 4th	C	C09AA	1970-01-01	2099-12-31	
+1125315	acetaminophen 500 "MG"	Drug	RxNorm	Ingredient	S	161	1970-01-01	2099-12-31	
+1310149	perindopril	Drug	RxNorm	Ingredient	S	54552	1970-01-01	2099-12-31	
+1332418	amlodipine	Drug	RxNorm Extension	Ingredient	S	17767	1970-01-01	2099-12-31	
+9999999	obsoletine	Drug	RxNorm	Ingredient		99999	1970-01-01	2020-01-01	D
+8888888	amlodipine 5 MG Oral Tablet	Drug	RxNorm	Clinical Drug	S	197361	1970-01-01	2099-12-31	
+7777777	Hypertension	Condition	SNOMED	Clinical Finding	S	38341003	1970-01-01	2099-12-31	
+21600006	amoxicillin	Drug	ATC	ATC 5th	C	J01CA04	1970-01-01	2099-12-31	
+1713671	amoxicillin	Drug	RxNorm	Ingredient	S	723	1970-01-01	2099-12-31	

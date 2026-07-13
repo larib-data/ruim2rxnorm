@@ -1,0 +1,10 @@
+URI,CIS,libelle,codeATC,libelleATC,formeStandardisee,voie
+u100,100,"COVERAM 5 mg/5 mg, comprimé",C09BB04,"périndopril et amlodipine",FT001,20
+u101,101,"COVERAM 10 mg/10 mg, comprimé",C09BB04,"périndopril et amlodipine",FT001,20
+u200,200,"DOLIPRANE 500 mg, gélule",N02BE01,Paracétamol,FT002,20
+u300,300,"AUGMENTIN 500 mg/62,5 mg, comprimé",J01CR02,"amoxicilline et inhibiteur de bêta-lactamase",FT003,20
+u400,400,"AMLOR 5 mg, gélule",C08CA01,amlodipine,FT004,20
+u401,401,"COVERSYL 5 mg, comprimé",C09AA04,périndopril,FT005,20
+u402,402,"CLAMOXYL 500 mg, gélule",J01CA04,amoxicilline,FT006,20
+u500,500,"AMLOSEL 5 mg, comprimé",C08CA01,amlodipine,FT010,20
+u501,501,"AMLODUO 5 mg, comprimé",C08CA01,amlodipine,FT011,20

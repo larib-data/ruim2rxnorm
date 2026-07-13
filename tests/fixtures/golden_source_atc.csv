@@ -1,0 +1,14 @@
+source_label,status,match_type,code_atc,candidate_atc,n_substances
+PROPOFOL,ok,exact,N01AX10,N01AX10 (Propofol),1
+KETAMINE,ok,exact,N01AX03,N01AX03 (Kétamine),1
+ETOMIDATE,ok,exact,N01AX07,N01AX07 (Etomidate),1
+BabyNoradrenaline,ok,manual,C01CA03,C01CA03 (Norépinéphrine),1
+Noradrenaline,ok,exact,C01CA03,C01CA03 (Norépinéphrine),1
+ADRENALINE,ok,exact,C01CA24,C01CA24 (Epinéphrine),1
+EPHEDRINE,ok,token,C01CA26,C01CA26 (Ephédrine),1
+SUFENTANIL,ok,exact,N01AH03,N01AH03 (Sufentanil),1
+REMIFENTANIL,ok,exact,N01AH06,N01AH06 (Rémifentanil),1
+CEFAZOLIN,ok,exact,J01DB04,J01DB04 (Céfazoline),1
+PARACETAMOL,ok,exact,N02BE01,N02BE01 (Paracétamol),1
+NEFOPAM,ok,token,N02BG06,N02BG06 (Néfopam),1
+MORPHINE,ok,exact,N02AA01,N02AA01 (Morphine),1

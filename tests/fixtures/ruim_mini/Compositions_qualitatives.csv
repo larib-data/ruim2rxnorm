@@ -1,0 +1,20 @@
+URI,CIS,identifiantElement,relationSubstance,codeSubstance
+c1,100,E1,substance active,S_AML_SALT
+c2,100,E1,substance portant le dosage,S_AML_SALT
+c3,100,E1,fraction thérapeutique,S_AML
+c4,100,E2,substance active,S_PER_SALT
+c5,100,E2,fraction thérapeutique,S_PER
+c6,101,E1,fraction thérapeutique,S_AML
+c7,101,E2,fraction thérapeutique,S_PER
+c8,200,E1,substance active,S_PARA
+c9,200,E1,substance portant le dosage,S_PARA
+c10,300,E1,fraction thérapeutique,S_AMOX
+c11,300,E2,fraction thérapeutique,S_CLAV
+c12,400,E1,substance active,S_AML_SALT
+c13,400,E1,fraction thérapeutique,S_AML
+c14,401,E1,substance active,S_PER_SALT
+c15,401,E1,fraction thérapeutique,S_PER
+c16,402,E1,fraction thérapeutique,S_AMOX
+c17,500,E1,fraction thérapeutique,S_AML2
+c18,501,E1,fraction thérapeutique,S_AML
+c19,501,E2,fraction thérapeutique,S_AML2

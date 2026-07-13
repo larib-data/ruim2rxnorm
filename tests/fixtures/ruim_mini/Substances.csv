@@ -1,0 +1,7 @@
+URI,codeSubstance,libelle_fr,codeSMS,synonymes_fr
+s1,S_AML,amlodipine,x1,
+s2,S_PER,périndopril,x2,"périndopril tert-butylamine"
+s3,S_PARA,paracétamol,x3,
+s4,S_AMOX,amoxicilline,x4,"amoxicilline trihydratée"
+s5,S_CLAV,acide clavulanique,x5,
+s6,S_AML2,bésilate d'amlodipine,x6,
