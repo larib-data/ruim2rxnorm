@@ -4,10 +4,6 @@
 matcher compares (a user query, a RUIM ``libelle`` brand key, a French substance
 name) is passed through this first so comparison is apples-to-apples. Output is
 **lower-case, ASCII-folded**.
-
-Matching is French-to-French throughout and the only crossing into RxNorm is by
-ATC code, so no substance name is ever translated or salt-stripped for matching
-here -- the RUIM ``fraction therapeutique`` rows already name the moiety.
 """
 
 from __future__ import annotations
