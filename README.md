@@ -34,6 +34,14 @@ uv run pytest            # run the tests
 uv run ruim2rxnorm map "COVERAM"
 ```
 
+Lint and format with ruff, type-check with ty, audit with pip-audit:
+
+```
+uv run ruff check && uv run ruff format --check
+uv run ty check
+uvx pip-audit
+```
+
 The runtime core depends only on the Python standard library; `pip install .`
 still works for consumers who don't use uv.
 

@@ -2,8 +2,8 @@
 
 Build with::
 
-    pip install -e ".[docs]"
-    sphinx-build -W -b html docs docs/_build/html
+    uv sync --group docs
+    uv run ruim2rxnorm-docs   # sphinx-build -W -b html docs docs/_build/html
 """
 
 from __future__ import annotations
