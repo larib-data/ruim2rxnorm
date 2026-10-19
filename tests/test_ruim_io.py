@@ -11,9 +11,13 @@ RUIM = Path(__file__).parent / "fixtures" / "ruim_mini"
 
 # --- brand_key ---------------------------------------------------------------
 
+
 def test_brand_key_cuts_at_dose():
     assert R.brand_key("COVERAM 5 mg/5 mg, comprimé") == "coveram"
-    assert R.brand_key("PARACETAMOL ZYDUS FRANCE 500 mg, gélule") == "paracetamol zydus france"
+    assert (
+        R.brand_key("PARACETAMOL ZYDUS FRANCE 500 mg, gélule")
+        == "paracetamol zydus france"
+    )
 
 
 def test_brand_key_cuts_at_comma_before_dose():
@@ -26,6 +30,7 @@ def test_brand_key_strips_query_dose():
 
 
 # --- CIS ---------------------------------------------------------------------
+
 
 def test_load_cis_fields():
     rows = R.load_cis(RUIM)
@@ -47,6 +52,7 @@ def test_group_by_brand_key():
 
 # --- Compositions (fraction thérapeutique only) ------------------------------
 
+
 def test_load_compositions_prefers_fraction_therapeutique():
     comp = R.load_compositions(RUIM)
     # CIS 100 has fraction thérapeutique rows -> use the base moieties, not the salts.
@@ -61,6 +67,7 @@ def test_load_compositions_falls_back_to_substance_active():
 
 
 # --- Substances --------------------------------------------------------------
+
 
 def test_load_substances_names_and_synonyms():
     subs = R.load_substances(RUIM)

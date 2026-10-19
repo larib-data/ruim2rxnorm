@@ -114,7 +114,11 @@ def test_salt_and_base_collapse_to_one_ingredient(built):
 def test_no_duplicate_mapped_keys(built):
     out, _ = built
     rows = _read(out / etl.BRAND_INGREDIENT_MAP)
-    keys = [(r["brand_key"], r["rxnorm_concept_id"]) for r in rows if r["status"] == "mapped"]
+    keys = [
+        (r["brand_key"], r["rxnorm_concept_id"])
+        for r in rows
+        if r["status"] == "mapped"
+    ]
     assert len(keys) == len(set(keys))
 
 
@@ -138,7 +142,9 @@ def test_manifest_provenance_and_coverage(built):
 def test_validate_raises_on_missing_golden(tmp_path, monkeypatch):
     monkeypatch.setitem(etl._GOLDEN_MAPPED, "doliprane", ("definitely-not-real",))
     with pytest.raises(etl.ValidationError):
-        etl.build_refs(ATHENA, RUIM, out_dir=tmp_path, overrides_path=None, validate=True)
+        etl.build_refs(
+            ATHENA, RUIM, out_dir=tmp_path, overrides_path=None, validate=True
+        )
 
 
 def test_validate_raises_on_coverage_threshold(tmp_path):

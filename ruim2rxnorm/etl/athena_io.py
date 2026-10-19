@@ -69,9 +69,7 @@ def read_table(athena_dir: Union[str, Path], table: str) -> Iterator[Dict[str, s
     return read_rows(table_path(athena_dir, table))
 
 
-def read_vocabulary_version(
-    athena_dir: Union[str, Path], vocabulary_id: str
-) -> str:
+def read_vocabulary_version(athena_dir: Union[str, Path], vocabulary_id: str) -> str:
     """Return the ``vocabulary_version`` string for *vocabulary_id*.
 
     Used to stamp ``REFS_MANIFEST.json`` with the exact Athena release the

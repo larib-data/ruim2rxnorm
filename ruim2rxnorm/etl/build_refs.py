@@ -167,12 +167,16 @@ def build_refs(
     _write_csv(out / BRAND_INGREDIENT_MAP, list(COLUMNS), result.rows)
 
     coverage_specialities = (
-        result.specialities_reached / result.n_specialities if result.n_specialities else 0.0
+        result.specialities_reached / result.n_specialities
+        if result.n_specialities
+        else 0.0
     )
     manifest = {
         "tool": "ruim2rxnorm",
         "tool_version": _tool_version(),
-        "built_at": _dt.datetime.now(_dt.timezone.utc).replace(microsecond=0).isoformat(),
+        "built_at": _dt.datetime.now(_dt.timezone.utc)
+        .replace(microsecond=0)
+        .isoformat(),
         "athena_dir": str(athena_dir),
         "ruim_dir": str(ruim_dir),
         "vocabularies": list(_resolve.VOCABULARIES),
@@ -255,15 +259,28 @@ def _resolve_all(athena_dir: Path, ruim_dir: Path, overrides) -> _BuildResult:
                 n_unmapped += 1
                 rows.append(
                     (
-                        brand_key, display, str(n_spec), cis_atc,
-                        m.code, m.name_fr, res.individual_atc,
+                        brand_key,
+                        display,
+                        str(n_spec),
+                        cis_atc,
+                        m.code,
+                        m.name_fr,
+                        res.individual_atc,
                         atc_label_fr.get(res.individual_atc, ""),
-                        _NO_CONCEPT, "", "", is_combo, res.status, res.reason,
+                        _NO_CONCEPT,
+                        "",
+                        "",
+                        is_combo,
+                        res.status,
+                        res.reason,
                     )
                 )
 
         for concept_id in sorted(mapped_groups):
-            group = sorted(mapped_groups[concept_id], key=lambda mr: (mr[1].individual_atc, mr[0].code))
+            group = sorted(
+                mapped_groups[concept_id],
+                key=lambda mr: (mr[1].individual_atc, mr[0].code),
+            )
             ing = group[0][1].ingredient
             rep_atc = group[0][1].individual_atc  # deterministic: smallest (atc, code)
             sub_codes = ";".join(dict.fromkeys(m.code for m, _ in group))
@@ -272,11 +289,20 @@ def _resolve_all(athena_dir: Path, ruim_dir: Path, overrides) -> _BuildResult:
             n_mapped += 1
             rows.append(
                 (
-                    brand_key, display, str(n_spec), cis_atc,
-                    sub_codes, sub_names, rep_atc,
+                    brand_key,
+                    display,
+                    str(n_spec),
+                    cis_atc,
+                    sub_codes,
+                    sub_names,
+                    rep_atc,
                     atc_label_fr.get(rep_atc, ""),
-                    ing.concept_id, ing.code, ing.name,
-                    is_combo, "mapped", reason,
+                    ing.concept_id,
+                    ing.code,
+                    ing.name,
+                    is_combo,
+                    "mapped",
+                    reason,
                 )
             )
 
@@ -327,9 +353,7 @@ def _validate(result: _BuildResult, manifest: dict, coverage_threshold: float) -
 
     # No duplicate (brand_key, rxnorm_concept_id) among *mapped* rows (unmapped
     # rows legitimately share the "0" placeholder).
-    mapped_keys = [
-        (r[ci_brand], r[ci_rxid]) for r in rows if r[ci_status] == "mapped"
-    ]
+    mapped_keys = [(r[ci_brand], r[ci_rxid]) for r in rows if r[ci_status] == "mapped"]
     if len(mapped_keys) != len(set(mapped_keys)):
         errors.append("duplicate (brand_key, rxnorm_concept_id) among mapped rows")
 
@@ -363,7 +387,12 @@ def _validate(result: _BuildResult, manifest: dict, coverage_threshold: float) -
         )
 
     # Manifest completeness.
-    for key in ("tool_version", "vocabulary_versions", "row_counts", "relationships_kept"):
+    for key in (
+        "tool_version",
+        "vocabulary_versions",
+        "row_counts",
+        "relationships_kept",
+    ):
         if not manifest.get(key):
             errors.append(f"manifest missing/empty field: {key}")
     if not manifest.get("vocabulary_versions", {}).get("RxNorm"):

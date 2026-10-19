@@ -6,8 +6,14 @@ from ruim2rxnorm import lookup as L
 from ruim2rxnorm.lookup import BrandIndex, IngredientRow
 
 
-def _row(brand_key: str, substance_fr: str, concept_id: str, name: str,
-         status: str = "mapped", reason: str = "") -> IngredientRow:
+def _row(
+    brand_key: str,
+    substance_fr: str,
+    concept_id: str,
+    name: str,
+    status: str = "mapped",
+    reason: str = "",
+) -> IngredientRow:
     return IngredientRow.from_dict(
         {
             "brand_key": brand_key,
@@ -43,8 +49,14 @@ def _index() -> BrandIndex:
         ],
         "augmentin": [
             _row("augmentin", "amoxicilline", "723", "amoxicillin"),
-            _row("augmentin", "acide clavulanique", "0", "",
-                 status="unmapped", reason="no_ruim_mono_atc"),
+            _row(
+                "augmentin",
+                "acide clavulanique",
+                "0",
+                "",
+                status="unmapped",
+                reason="no_ruim_mono_atc",
+            ),
         ],
         "cefazoline": [_row("cefazoline", "céfazoline", "2180", "cefazolin")],
     }
@@ -53,6 +65,7 @@ def _index() -> BrandIndex:
 
 
 # --- exact -------------------------------------------------------------------
+
 
 def test_exact_returns_all_ingredient_rows():
     res = _index().lookup("COVERAM")
@@ -77,6 +90,7 @@ def test_exact_prefers_exact_over_prefix():
 
 # --- prefix ------------------------------------------------------------------
 
+
 def test_prefix_fans_out_to_variants():
     idx = _index()
     del idx.by_key["humex"]  # drop the exact key -> fall through to prefix
@@ -89,6 +103,7 @@ def test_prefix_fans_out_to_variants():
 
 # --- alias -------------------------------------------------------------------
 
+
 def test_alias_redirects_to_brand_key():
     res = _index().lookup("CEFAZOLIN")
     assert res.match_type == "alias"
@@ -97,6 +112,7 @@ def test_alias_redirects_to_brand_key():
 
 
 # --- no match ----------------------------------------------------------------
+
 
 def test_unknown_query_is_no_match():
     res = _index().lookup("NOTADRUG")
@@ -113,6 +129,7 @@ def test_empty_query_is_no_match():
 
 # --- unmapped rows are surfaced, not dropped ---------------------------------
 
+
 def test_unmapped_ingredient_row_is_returned():
     res = _index().lookup("AUGMENTIN")
     names = {r.substance_fr: r for r in res.rows}
@@ -124,6 +141,7 @@ def test_unmapped_ingredient_row_is_returned():
 
 
 # --- golden smoke test against the real shipped table ------------------------
+
 
 def test_shipped_table_coveram_golden():
     res = L.lookup("COVERAM")

@@ -13,6 +13,7 @@ from ruim2rxnorm.cli import main
 
 # --- map ---------------------------------------------------------------------
 
+
 def test_map_coveram_prints_both_ingredients(capsys):
     rc = main(["map", "COVERAM"])
     out = capsys.readouterr().out
@@ -42,6 +43,7 @@ def test_map_no_match_reports_and_strict_exits_nonzero(capsys):
 
 # --- map-file ----------------------------------------------------------------
 
+
 def _read(path):
     with open(path, encoding="utf-8", newline="") as fh:
         return list(csv.DictReader(fh))
@@ -67,12 +69,20 @@ def test_map_file_writes_mapping_and_stcm(tmp_path, capsys):
 
     stcm = _read(out_dir / "SOURCE_TO_CONCEPT_MAP.csv")
     assert list(stcm[0].keys()) == [
-        "source_code", "source_concept_id", "source_vocabulary_id",
-        "source_code_description", "target_concept_id", "target_vocabulary_id",
-        "valid_start_date", "valid_end_date", "invalid_reason",
+        "source_code",
+        "source_concept_id",
+        "source_vocabulary_id",
+        "source_code_description",
+        "target_concept_id",
+        "target_vocabulary_id",
+        "valid_start_date",
+        "valid_end_date",
+        "invalid_reason",
     ]
     coveram_targets = {
-        r["target_concept_id"] for r in stcm if r["source_code_description"] == "COVERAM"
+        r["target_concept_id"]
+        for r in stcm
+        if r["source_code_description"] == "COVERAM"
     }
     assert "0" not in coveram_targets and len(coveram_targets) == 2
 
@@ -95,8 +105,9 @@ def test_map_file_named_column(tmp_path):
 def test_map_file_missing_column_errors(tmp_path, capsys):
     src = tmp_path / "names.csv"
     src.write_text("id,drug\n1,COVERAM\n", encoding="utf-8")
-    rc = main(["map-file", str(src), "--out-dir", str(tmp_path / "out"),
-               "--column", "nope"])
+    rc = main(
+        ["map-file", str(src), "--out-dir", str(tmp_path / "out"), "--column", "nope"]
+    )
     assert rc == 1
     assert "not found" in capsys.readouterr().err
 

@@ -220,9 +220,7 @@ def write_stcm_csv(
     source_vocabulary_id: str = SOURCE_VOCABULARY_ID,
 ) -> int:
     """Write the OMOP ``SOURCE_TO_CONCEPT_MAP`` CSV; return rows written."""
-    return _write_csv(
-        dest, STCM_COLUMNS, stcm_rows(results, source_vocabulary_id)
-    )
+    return _write_csv(dest, STCM_COLUMNS, stcm_rows(results, source_vocabulary_id))
 
 
 def write_usagi_csv(results: Iterable[MatchResult], dest) -> int:

@@ -40,7 +40,9 @@ _DEFAULT_RUIM = (
 )
 _RUIM_DIR = Path(os.environ.get("RUIM2RXNORM_RUIM_DIR", _DEFAULT_RUIM))
 _GOLDEN = Path(__file__).parent / "fixtures" / "golden_source_atc.csv"
-_ALIASES = Path(__file__).resolve().parents[1] / "ruim2rxnorm" / "refs" / "source_aliases.csv"
+_ALIASES = (
+    Path(__file__).resolve().parents[1] / "ruim2rxnorm" / "refs" / "source_aliases.csv"
+)
 
 pytestmark = pytest.mark.skipif(
     not (_RUIM_DIR / "CIS.csv").exists(),
@@ -63,7 +65,9 @@ def aliases() -> Dict[str, str]:
     return R.load_source_aliases(_ALIASES)
 
 
-def _candidate_atcs(by_key: Dict[str, List[R.CisRow]], aliases: Dict[str, str], label: str) -> List[str]:
+def _candidate_atcs(
+    by_key: Dict[str, List[R.CisRow]], aliases: Dict[str, str], label: str
+) -> List[str]:
     """ATC codes for a label: source alias -> exact brand-key hit -> whole-word prefix."""
     from ruim2rxnorm.normalize import normalize
 

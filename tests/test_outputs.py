@@ -9,8 +9,16 @@ from ruim2rxnorm import outputs as O
 from ruim2rxnorm.lookup import IngredientRow, MatchResult
 
 
-def _row(brand_key, substance_fr, concept_id, code, name,
-         status="mapped", reason="", is_combination="1"):
+def _row(
+    brand_key,
+    substance_fr,
+    concept_id,
+    code,
+    name,
+    status="mapped",
+    reason="",
+    is_combination="1",
+):
     return IngredientRow.from_dict(
         {
             "brand_key": brand_key,
@@ -42,8 +50,15 @@ def _coveram() -> MatchResult:
 def _augmentin() -> MatchResult:
     rows = [
         _row("augmentin", "amoxicilline", "1713", "723", "amoxicillin"),
-        _row("augmentin", "acide clavulanique", "0", "", "",
-             status="unmapped", reason="no_ruim_mono_atc"),
+        _row(
+            "augmentin",
+            "acide clavulanique",
+            "0",
+            "",
+            "",
+            status="unmapped",
+            reason="no_ruim_mono_atc",
+        ),
     ]
     return MatchResult("AUGMENTIN", "augmentin", "exact", ["augmentin"], rows)
 
@@ -57,6 +72,7 @@ def _read(text):
 
 
 # --- mapping CSV -------------------------------------------------------------
+
 
 def test_mapping_csv_one_row_per_ingredient():
     buf = io.StringIO()
@@ -89,6 +105,7 @@ def test_mapping_csv_emits_no_match_placeholder():
 
 
 # --- STCM --------------------------------------------------------------------
+
 
 def test_stcm_has_nine_spec_columns():
     buf = io.StringIO()
@@ -139,6 +156,7 @@ def test_stcm_custom_source_vocabulary():
 
 # --- Usagi -------------------------------------------------------------------
 
+
 def test_usagi_marks_mapped_and_unmapped():
     buf = io.StringIO()
     O.write_usagi_csv([_augmentin()], buf)
@@ -147,6 +165,7 @@ def test_usagi_marks_mapped_and_unmapped():
 
 
 # --- path destination --------------------------------------------------------
+
 
 def test_writers_accept_a_path(tmp_path):
     p = tmp_path / "stcm.csv"

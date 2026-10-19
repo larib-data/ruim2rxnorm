@@ -215,13 +215,13 @@ def build_parser() -> argparse.ArgumentParser:
         "--column",
         default=None,
         help="With --file, read names from this named column (file treated as "
-             "CSV-with-header); default: the first field of every row.",
+        "CSV-with-header); default: the first field of every row.",
     )
     parser.add_argument(
         "--out-dir",
         default=None,
         help="Also write rxrisk_conditions.csv / rxrisk_by_drug.csv / "
-             "rxrisk_summary.csv into this directory.",
+        "rxrisk_summary.csv into this directory.",
     )
     parser.set_defaults(func=_cmd_rxrisk)
     return parser

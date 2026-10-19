@@ -132,9 +132,7 @@ class BrandIndex:
         # (1) exact brand-key hit.
         if key in self.by_key:
             rows = list(self.by_key[key])
-            return MatchResult(
-                query, key, "alias" if aliased else "exact", [key], rows
-            )
+            return MatchResult(query, key, "alias" if aliased else "exact", [key], rows)
 
         # (2) whole-word prefix over the table's keys.
         prefix = key + " "

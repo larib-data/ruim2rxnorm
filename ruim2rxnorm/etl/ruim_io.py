@@ -191,7 +191,10 @@ def load_compositions(ruim_dir: Union[str, Path]) -> Dict[str, List[str]]:
             codes = bucket.setdefault(cis, [])
             if code not in codes:
                 codes.append(code)
-    return {cis: fractions.get(cis) or actives[cis] for cis in (fractions.keys() | actives.keys())}
+    return {
+        cis: fractions.get(cis) or actives[cis]
+        for cis in (fractions.keys() | actives.keys())
+    }
 
 
 def load_substances(ruim_dir: Union[str, Path]) -> Dict[str, Substance]:

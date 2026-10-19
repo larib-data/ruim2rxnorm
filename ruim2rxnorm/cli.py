@@ -42,12 +42,18 @@ def _cmd_build_refs(args: argparse.Namespace) -> int:
     n_rows = manifest["row_counts"][etl.BRAND_INGREDIENT_MAP]
     cov = manifest["coverage"]
     print("build-refs: wrote brand_ingredient_map.csv")
-    print(f"  ingredient rows: {n_rows} ({manifest['ingredient_rows_mapped']} mapped, "
-          f"{manifest['ingredient_rows_unmapped']} unmapped)")
+    print(
+        f"  ingredient rows: {n_rows} ({manifest['ingredient_rows_mapped']} mapped, "
+        f"{manifest['ingredient_rows_unmapped']} unmapped)"
+    )
     print(f"  distinct brand keys: {manifest['distinct_brand_keys']}")
-    print(f"  speciality coverage: {cov['specialities_reached']}/{cov['specialities_total']} "
-          f"({cov['specialities_reached_share']:.1%})")
-    versions = ", ".join(f"{k}={v}" for k, v in manifest["vocabulary_versions"].items() if v)
+    print(
+        f"  speciality coverage: {cov['specialities_reached']}/{cov['specialities_total']} "
+        f"({cov['specialities_reached_share']:.1%})"
+    )
+    versions = ", ".join(
+        f"{k}={v}" for k, v in manifest["vocabulary_versions"].items() if v
+    )
     if versions:
         print(f"  vocabulary versions: {versions}")
     if args.validate:
@@ -169,14 +175,20 @@ def _print_coverage(results: List, written) -> None:
     print(f"  input names:        {n_queries}")
     print(f"  matched a brand:    {n_matched} ({_share(n_matched, n_queries)})")
     print(f"  no match:           {n_queries - n_matched}")
-    print(f"  ingredient rows:    {n_ingredient_rows} "
-          f"({n_mapped} mapped, {n_unmapped} unmapped)")
+    print(
+        f"  ingredient rows:    {n_ingredient_rows} "
+        f"({n_mapped} mapped, {n_unmapped} unmapped)"
+    )
     print("  outputs:")
     for path, count in written:
         print(f"    {path}  ({count} rows)")
     if unmatched_names:
         shown = ", ".join(unmatched_names[:10])
-        more = "" if len(unmatched_names) <= 10 else f", (+{len(unmatched_names) - 10} more)"
+        more = (
+            ""
+            if len(unmatched_names) <= 10
+            else f", (+{len(unmatched_names) - 10} more)"
+        )
         print(f"  unmatched names: {shown}{more}")
 
 
@@ -258,7 +270,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--column",
         default=None,
         help="Read names from this named column (file is treated as CSV-with-header); "
-             "default: the first field of every row.",
+        "default: the first field of every row.",
     )
     p_file.add_argument(
         "--stcm",
@@ -288,8 +300,12 @@ def main(argv=None) -> int:
         parser.print_help(sys.stderr)
         return 1
     # Fill the STCM default here so outputs.SOURCE_VOCABULARY_ID stays the source of truth.
-    if getattr(args, "source_vocabulary_id", None) is None and args._command == "map-file":
+    if (
+        getattr(args, "source_vocabulary_id", None) is None
+        and args._command == "map-file"
+    ):
         from . import outputs as out
+
         args.source_vocabulary_id = out.SOURCE_VOCABULARY_ID
     return args.func(args)
 

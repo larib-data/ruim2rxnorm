@@ -105,7 +105,9 @@ class RxRiskIndex:
         self.conditions: Tuple[RxRiskCondition, ...] = tuple(conditions)
 
     @classmethod
-    def load(cls, package: str = _REFS_PACKAGE, name: str = RXRISK_MAP) -> "RxRiskIndex":
+    def load(
+        cls, package: str = _REFS_PACKAGE, name: str = RXRISK_MAP
+    ) -> "RxRiskIndex":
         """Load the shipped ``rxrisk_map.csv`` via :mod:`importlib.resources`."""
         conditions: List[RxRiskCondition] = []
         with io.TextIOWrapper(

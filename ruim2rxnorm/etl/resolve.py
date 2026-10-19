@@ -142,7 +142,10 @@ def load_athena_index(athena_dir: Union[str, Path]) -> AthenaIndex:
                 base = c.get("concept_name", "").split(";", 1)[0].strip()
                 idx.atc5_name_by_code[code] = base
         elif vocab in _RXNORM_VOCABS:
-            if c.get("invalid_reason") or c.get("concept_class_id") != _INGREDIENT_CLASS:
+            if (
+                c.get("invalid_reason")
+                or c.get("concept_class_id") != _INGREDIENT_CLASS
+            ):
                 continue
             ing = Ingredient(
                 concept_id=c["concept_id"],
@@ -169,7 +172,7 @@ def load_athena_index(athena_dir: Union[str, Path]) -> AthenaIndex:
         cur = best_rel.get(key)
         if cur is None or _RELATIONSHIP_RANK[rel] < _RELATIONSHIP_RANK[cur]:
             best_rel[key] = rel
-    for (code, cid) in best_rel:
+    for code, cid in best_rel:
         idx.atc_to_ingredients.setdefault(code, []).append(idx.ingredient_by_id[cid])
 
     for vocab in (*VOCABULARIES, "None"):
@@ -358,10 +361,20 @@ class Resolver:
     def resolve(self, moiety: Moiety) -> Resolution:
         """Resolve *moiety*: override -> RUIM ATC bridge -> explicit failure."""
         # 1. Curated override (by code, else by normalized name).
-        ov = self.overrides.get(moiety.code) or self.overrides.get(normalize(moiety.name_fr))
+        ov = self.overrides.get(moiety.code) or self.overrides.get(
+            normalize(moiety.name_fr)
+        )
         if ov is not None:
-            if ov.rxnorm_concept_id and ov.rxnorm_concept_id in self.index.ingredient_by_id:
-                return self._mapped(moiety, ov.atc, self.index.ingredient_by_id[ov.rxnorm_concept_id], "override")
+            if (
+                ov.rxnorm_concept_id
+                and ov.rxnorm_concept_id in self.index.ingredient_by_id
+            ):
+                return self._mapped(
+                    moiety,
+                    ov.atc,
+                    self.index.ingredient_by_id[ov.rxnorm_concept_id],
+                    "override",
+                )
             if ov.atc:
                 return self._ingredient_for_atc(moiety, ov.atc, "override")
 
