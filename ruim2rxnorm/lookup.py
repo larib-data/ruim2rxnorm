@@ -19,13 +19,17 @@ Two shipped tables are read via :mod:`importlib.resources`:
   spelling) to an existing RUIM ``brand_key`` before matching. Ships with only a
   couple of hand-added entries and grows as real source data needs it.
 
-Matching (mirrors the step-6 exact/prefix logic, now over the table's keys):
+Matching, after the alias redirect (reported as ``alias``):
 
 1. **exact** brand-key hit;
-2. else **whole-word prefix** — every table key that begins with the query key
+2. else **substance** — the key is a French substance name (``"paracetamol"``,
+   ``"sugammadex"``): the rows of that substance's mono brands only;
+3. else **whole-word prefix** — every table key that begins with the query key
    as a whole word (``"humex"`` -> ``humex allergie cetirizine`` ...), so an
    umbrella brand fans out to its variants;
-3. else **no match**.
+4. else steps 1-3 again with salt words removed (``"sugammadex sodique"`` ->
+   ``"sugammadex"``, see :data:`SALT_WORDS`);
+5. else **no match**.
 
 All matched ingredient rows are returned, including ``status = unmapped`` ones
 (``target_concept_id`` 0 downstream) — an unmapped moiety is an explicit result,
@@ -36,11 +40,13 @@ from __future__ import annotations
 
 import csv
 import io
+import re
 from dataclasses import dataclass, fields
 from importlib import resources
 from typing import Dict, List, Optional
 
 from .etl.ruim_io import brand_key, load_source_aliases
+from .normalize import normalize
 
 #: Package subdirectory holding the shipped reference data.
 _REFS_PACKAGE = "ruim2rxnorm.refs"
@@ -104,6 +110,57 @@ class MatchResult:
         return self.match_type != "no_match"
 
 
+#: Salt and hydrate words that source labels add to a substance name
+#: (``"sugammadex sodique"``, ``"neostigmine methylsulfate"``,
+#: ``"cefoxitine sel de Na"``). Removed, after normalization, for the last
+#: matching step only.
+SALT_WORDS = frozenset(
+    {
+        "sodique",
+        "disodique",
+        "potassique",
+        "calcique",
+        "magnesique",
+        "chlorhydrate",
+        "dichlorhydrate",
+        "hydrochloride",
+        "bromhydrate",
+        "sulfate",
+        "phosphate",
+        "methylsulfate",
+        "metilsulfate",
+        "mesilate",
+        "maleate",
+        "tartrate",
+        "bitartrate",
+        "citrate",
+        "acetate",
+        "fumarate",
+        "succinate",
+        "besilate",
+        "anhydre",
+        "monohydrate",
+        "dihydrate",
+        "trihydrate",
+        "hemihydrate",
+        "base",
+    }
+)
+_SALT_PHRASE = re.compile(r"\bsel de (?:na|sodium|k|potassium)\b")
+_LINK_WORDS = frozenset({"de", "d'", "du"})
+
+
+def strip_salts(key: str) -> str:
+    """Drop salt and hydrate words (and the ``de`` they leave) from a key."""
+    key = _SALT_PHRASE.sub(" ", key)
+    words = [w for w in key.split() if w not in SALT_WORDS]
+    while words and words[0] in _LINK_WORDS:
+        words.pop(0)
+    while words and words[-1] in _LINK_WORDS:
+        words.pop()
+    return " ".join(words)
+
+
 class BrandIndex:
     """In-memory index over the precomputed table + the source-alias layer."""
 
@@ -114,6 +171,13 @@ class BrandIndex:
     ) -> None:
         self.by_key = by_key
         self.aliases = aliases or {}
+        #: normalized French substance name -> its mono brands' rows.
+        self.by_substance: Dict[str, List[IngredientRow]] = {}
+        for rows in by_key.values():
+            for row in rows:
+                if row.is_combination == "0" and row.substance_fr:
+                    name = normalize(row.substance_fr)
+                    self.by_substance.setdefault(name, []).append(row)
 
     def lookup(self, query: str) -> MatchResult:
         """Resolve *query* to its ingredient rows (see module docstring for order)."""
@@ -121,20 +185,39 @@ class BrandIndex:
 
         # Manual layer: redirect a non-RUIM / misspelled source label to a real
         # brand key before matching. An alias hit is reported as "alias".
-        aliased = False
         if key in self.aliases:
             key = self.aliases[key]
-            aliased = True
+            if key in self.by_key:
+                return MatchResult(query, key, "alias", [key], list(self.by_key[key]))
 
         if not key:
             return MatchResult(query, key, "no_match", [], [])
 
+        found = self._match(query, key)
+        if found.matched:
+            return found
+        # Last resort: the label is a substance plus its salt.
+        bare = strip_salts(key)
+        if bare and bare != key:
+            found = self._match(query, bare)
+            if found.matched:
+                return found
+        return MatchResult(query, key, "no_match", [], [])
+
+    def _match(self, query: str, key: str) -> MatchResult:
         # (1) exact brand-key hit.
         if key in self.by_key:
-            rows = list(self.by_key[key])
-            return MatchResult(query, key, "alias" if aliased else "exact", [key], rows)
+            return MatchResult(query, key, "exact", [key], list(self.by_key[key]))
 
-        # (2) whole-word prefix over the table's keys.
+        # (2) the key names a substance: its mono brands only, so that a bare
+        # ingredient does not fan out to every combination starting with it
+        # ("paracetamol" -> not "paracetamol cafeine codeine ...").
+        if key in self.by_substance:
+            rows = list(self.by_substance[key])
+            keys = sorted({r.brand_key for r in rows})
+            return MatchResult(query, key, "substance", keys, rows)
+
+        # (3) whole-word prefix over the table's keys.
         prefix = key + " "
         matched_keys = sorted(k for k in self.by_key if k.startswith(prefix))
         if matched_keys:
@@ -143,7 +226,6 @@ class BrandIndex:
                 rows.extend(self.by_key[k])
             return MatchResult(query, key, "prefix", matched_keys, rows)
 
-        # (3) nothing.
         return MatchResult(query, key, "no_match", [], [])
 
 

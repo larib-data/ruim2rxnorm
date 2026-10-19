@@ -24,7 +24,8 @@ Parts:
 * :func:`brand_moieties` — a brand's CIS rows + the RUIM composition/substance
   tables -> its de-duplicated therapeutic moieties (mono = 1, combination = >=2).
 * :func:`build_substance_atc_index` — RUIM ``codeSubstance`` -> its individual
-  (mono) 5th-level ATC, from specialities that contain only that one moiety.
+  (mono) 5th-level ATC, from specialities that contain only that one moiety
+  (majority vote, preferring codes that map to a single RxNorm ingredient).
 * :class:`Resolver` — a single moiety -> :class:`Resolution`: curated override,
   else RUIM substance->ATC, else an explicit ``unmapped`` failure; the resolved
   ATC is turned into an RxNorm ingredient via Athena.
@@ -39,6 +40,7 @@ combination ATC that lists several ingredients here is never expanded.
 from __future__ import annotations
 
 import csv
+from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
@@ -227,6 +229,7 @@ def brand_moieties(
 def build_substance_atc_index(
     cis_rows: List[CisRow],
     compositions: Dict[str, List[str]],
+    index: Optional[AthenaIndex] = None,
 ) -> Dict[str, str]:
     """RUIM ``codeSubstance`` -> its individual (mono) 5th-level ATC.
 
@@ -234,15 +237,25 @@ def build_substance_atc_index(
     **only that one moiety** (its mono drugs): for such a speciality the
     ``CIS.codeATC`` is the substance's own 5th-level ATC. Combination specialities
     are skipped — their ``codeATC`` is the *combination* class (e.g. ``C09BB04``),
-    never a moiety's individual code. On the rare substance carrying several mono
-    ATCs, the lexicographically smallest is kept for determinism.
+    never a moiety's individual code.
+
+    A substance's mono specialities do not always agree: RUIM carries a few
+    miscoded ones (PROFEMIGR, a ketoprofen, is coded ``M01AE01``, ibuprofen) and
+    some mono drugs sit under a combination class (timolol under ``S01ED51``).
+    The ATC is therefore picked by, in order:
+
+    1. with *index*, codes Athena maps to exactly one RxNorm ingredient (a
+       combination class maps to several, or none);
+    2. the most specialities (majority vote);
+    3. the lexicographically smallest code, for determinism.
 
     This is the RUIM half of the bridge: French name -> ATC without ever touching
-    Athena. A substance never sold alone (e.g. clavulanic acid) simply does not
-    appear here, and the resolver fails it explicitly unless a curated override
+    Athena names (Athena only tells how many ingredients an ATC code maps to). A
+    substance never sold alone (e.g. clavulanic acid) simply does not appear
+    here, and the resolver fails it explicitly unless a curated override
     supplies a mapping.
     """
-    out: Dict[str, str] = {}
+    counts: Dict[str, Counter] = {}
     for row in cis_rows:
         codes = compositions.get(row.cis)
         if not codes or len(codes) != 1:
@@ -250,10 +263,15 @@ def build_substance_atc_index(
         atc = row.code_atc
         if not atc:
             continue
-        sub = codes[0]
-        if sub not in out or atc < out[sub]:
-            out[sub] = atc
-    return out
+        counts.setdefault(codes[0], Counter())[atc] += 1
+
+    def single(atc: str) -> bool:
+        return index is not None and len(index.atc_to_ingredients.get(atc, [])) == 1
+
+    return {
+        sub: min(c, key=lambda atc: (not single(atc), -c[atc], atc))
+        for sub, c in counts.items()
+    }
 
 
 # --- Substance -> individual ATC + RxNorm ingredient ------------------------

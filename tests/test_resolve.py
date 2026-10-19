@@ -67,6 +67,36 @@ def test_substance_atc_index_from_mono_specialities(substance_atc):
     assert "S_CLAV" not in substance_atc
 
 
+def _cis(cis, atc):
+    return R.CisRow(cis, "", "", atc, "", "", "")
+
+
+def test_substance_atc_majority_vote_beats_smallest_code():
+    # Ketoprofen: 3 mono specialities coded M01AE03, one miscoded M01AE01
+    # (ibuprofen). The smallest code used to win.
+    rows = [_cis(str(i), "M01AE03") for i in range(3)] + [_cis("9", "M01AE01")]
+    comps = {r.cis: ["S_KETO"] for r in rows}
+    assert RS.build_substance_atc_index(rows, comps) == {"S_KETO": "M01AE03"}
+
+
+def test_substance_atc_prefers_single_ingredient_codes():
+    # Timolol: mostly coded S01ED51 (timolol, combinations: several
+    # ingredients in Athena), sometimes S01ED01 (one ingredient).
+    rows = [_cis(str(i), "S01ED51") for i in range(3)] + [_cis("9", "S01ED01")]
+    comps = {r.cis: ["S_TIM"] for r in rows}
+    ing = RS.Ingredient("1", "10600", "timolol", "RxNorm")
+    other = RS.Ingredient("2", "3992", "dorzolamide", "RxNorm")
+    idx = RS.AthenaIndex(atc_to_ingredients={"S01ED01": [ing], "S01ED51": [ing, other]})
+    assert RS.build_substance_atc_index(rows, comps) == {"S_TIM": "S01ED51"}
+    assert RS.build_substance_atc_index(rows, comps, idx) == {"S_TIM": "S01ED01"}
+
+
+def test_substance_atc_tie_takes_smallest_code():
+    rows = [_cis("1", "C09BA04"), _cis("2", "C09AA04")]
+    comps = {r.cis: ["S_PER"] for r in rows}
+    assert RS.build_substance_atc_index(rows, comps) == {"S_PER": "C09AA04"}
+
+
 # --- Resolver: RUIM ATC bridge + Athena ATC->RxNorm --------------------------
 
 

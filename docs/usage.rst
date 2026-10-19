@@ -65,9 +65,14 @@ A query is normalized (accent/case/whitespace/punctuation folded, dose stripped)
 a brand key, then matched against the shipped table:
 
 1. **exact** brand-key hit;
-2. else **whole-word prefix** — every table key that begins with the query key as a whole word,
+2. else **substance** — the key is a French substance name (``paracetamol``, ``sugammadex``):
+   the rows of that substance's mono brands only, so a bare ingredient does not fan out to every
+   combination whose name starts with it;
+3. else **whole-word prefix** — every table key that begins with the query key as a whole word,
    so an umbrella brand fans out to its variants;
-3. else **no match**.
+4. else steps 1-3 again with salt and hydrate words removed (``sugammadex sodique`` ->
+   ``sugammadex``, ``cefoxitine sel de Na`` -> ``cefoxitine``);
+5. else **no match**.
 
 A curated ``source_aliases.csv`` layer can redirect a raw source label that is not a RUIM brand
 (a local custom name, a foreign spelling) to an existing brand key before matching.

@@ -48,6 +48,11 @@ mono drugs) as the active moieties. Stage 3 resolves each moiety to its individu
 RUIM speciality where it is the sole moiety, then to a RxNorm ingredient via Athena — the only
 place Athena is consulted, and never against a substance *name*.
 
+When a substance's mono specialities carry different ATC codes (RUIM miscodes a few: PROFEMIGR,
+a ketoprofen, is coded ``M01AE01``, ibuprofen), the code is picked by: codes Athena maps to a
+single RxNorm ingredient first (a combination class maps to several), then the most
+specialities, then the smallest code.
+
 Curated layers
 --------------
 

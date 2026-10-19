@@ -177,3 +177,61 @@ def test_shipped_table_tazobactam_override():
     mapped = {r.rxnorm_name: r for r in res.rows if r.is_mapped}
     assert mapped["tazobactam"].rxnorm_code == "37617"
     assert mapped["piperacillin"].rxnorm_code == "8339"
+
+
+# --- substance names and salts -------------------------------------------------
+
+
+def _substance_index() -> BrandIndex:
+    def row(brand, substance, concept_id, name, combo="0"):
+        r = _row(brand, substance, concept_id, name)
+        return IngredientRow.from_dict({**r.__dict__, "is_combination": combo})
+
+    by_key = {
+        "paracetamol arrow": [row("paracetamol arrow", "paracétamol", "161", "apap")],
+        "paracetamol cafeine codeine arrow": [
+            row("paracetamol cafeine codeine arrow", "paracétamol", "161", "apap", "1"),
+            row("paracetamol cafeine codeine arrow", "caféine", "1886", "caf", "1"),
+        ],
+        "sugammadex teva": [row("sugammadex teva", "sugammadex", "1726988", "sug")],
+        "neostigmine renaudin": [
+            row("neostigmine renaudin", "métilsulfate de néostigmine", "7315", "neo")
+        ],
+    }
+    return BrandIndex(by_key)
+
+
+def test_substance_name_returns_its_mono_brands_only():
+    res = _substance_index().lookup("PARACETAMOL")
+    assert res.match_type == "substance"
+    assert res.matched_keys == ["paracetamol arrow"]
+    assert {r.rxnorm_name for r in res.rows} == {"apap"}
+
+
+def test_salt_words_are_dropped_last():
+    idx = _substance_index()
+    res = idx.lookup("sugammadex sodique")
+    assert (res.match_type, res.query_key) == ("substance", "sugammadex")
+    res = idx.lookup("neostigmine methylsulfate")
+    assert (res.match_type, res.matched_keys) == ("prefix", ["neostigmine renaudin"])
+    assert idx.lookup("sodique").match_type == "no_match"
+
+
+def test_strip_salts():
+    assert L.strip_salts("cefoxitine sel de na") == "cefoxitine"
+    assert L.strip_salts("chlorhydrate de clindamycine") == "clindamycine"
+    assert L.strip_salts("metilsulfate de neostigmine") == "neostigmine"
+    assert L.strip_salts("propofol") == "propofol"
+
+
+def test_shipped_table_icca_labels():
+    # Labels as ICCA charts them (leading dots, salts, lower case).
+    for label, atc in [
+        ("sugammadex sodique", "V03AB35"),
+        ("ceftriaxone sodique", "J01DD04"),
+        ("neostigmine methylsulfate", "N07AA01"),
+        ("cefoxitine sel de Na", "J01DC01"),
+        ("..PARACETAMOL", "N02BE01"),
+    ]:
+        res = L.lookup(label)
+        assert {r.individual_atc for r in res.rows if r.is_mapped} == {atc}, label

@@ -212,7 +212,7 @@ def _resolve_all(athena_dir: Path, ruim_dir: Path, overrides) -> _BuildResult:
     compositions = ruim_io.load_compositions(ruim_dir)
     substances = ruim_io.load_substances(ruim_dir)
     by_brand = ruim_io.group_by_brand_key(cis_rows)
-    substance_atc = build_substance_atc_index(cis_rows, compositions)
+    substance_atc = build_substance_atc_index(cis_rows, compositions, index)
 
     # French ATC label lookup: RUIM carries a French libelleATC for every ATC it
     # references (including the individual mono codes recovered from mono
