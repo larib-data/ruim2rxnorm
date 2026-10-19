@@ -44,7 +44,6 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
 from ..normalize import normalize
-from . import athena_io
 from .athena_io import (
     CONCEPT,
     CONCEPT_RELATIONSHIP,

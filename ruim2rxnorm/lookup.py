@@ -35,12 +35,12 @@ never dropped.
 from __future__ import annotations
 
 import csv
+import io
 from dataclasses import dataclass, fields
 from importlib import resources
 from typing import Dict, List, Optional
 
 from .etl.ruim_io import brand_key, load_source_aliases
-from .normalize import normalize
 
 #: Package subdirectory holding the shipped reference data.
 _REFS_PACKAGE = "ruim2rxnorm.refs"
@@ -151,8 +151,8 @@ class BrandIndex:
 
 def _load_by_key(package: str, name: str) -> Dict[str, List[IngredientRow]]:
     by_key: Dict[str, List[IngredientRow]] = {}
-    with resources.files(package).joinpath(name).open(
-        "r", encoding="utf-8", newline=""
+    with io.TextIOWrapper(
+        resources.files(package).joinpath(name).open("rb"), encoding="utf-8", newline=""
     ) as fh:
         for raw in csv.DictReader(fh):
             row = IngredientRow.from_dict(raw)

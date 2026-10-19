@@ -71,6 +71,7 @@ def test_resolve_mono_via_ruim(index, substance_atc):
     r = RS.Resolver(index, substance_atc)
     para = r.resolve(RS.Moiety("S_PARA", "paracétamol"))
     assert para.status == "mapped" and para.individual_atc == "N02BE01"
+    assert para.ingredient is not None
     assert para.ingredient.code == "161" and para.reason == ""
 
 
@@ -81,9 +82,11 @@ def test_resolve_combination_decomposes_via_ruim(index, substance_atc):
     r = RS.Resolver(index, substance_atc)
     got = {m.name_fr: r.resolve(m) for m in moieties}
     assert got["amlodipine"].individual_atc == "C08CA01"
-    assert got["amlodipine"].ingredient.code == "17767"
+    ing = got["amlodipine"].ingredient
+    assert ing is not None and ing.code == "17767"
     assert got["périndopril"].individual_atc == "C09AA04"
-    assert got["périndopril"].ingredient.code == "54552"
+    ing = got["périndopril"].ingredient
+    assert ing is not None and ing.code == "54552"
 
 
 def test_resolve_augmentin_maps_amox_fails_clavulanic(index, substance_atc):
@@ -93,7 +96,8 @@ def test_resolve_augmentin_maps_amox_fails_clavulanic(index, substance_atc):
     got = {m.name_fr: r.resolve(m) for m in moieties}
     assert got["amoxicilline"].status == "mapped"
     assert got["amoxicilline"].individual_atc == "J01CA04"
-    assert got["amoxicilline"].ingredient.code == "723"
+    ing = got["amoxicilline"].ingredient
+    assert ing is not None and ing.code == "723"
     # Never sold alone, no override -> explicit failure, no Athena name guess.
     clav = got["acide clavulanique"]
     assert clav.status == "unmapped" and clav.reason == "no_ruim_mono_atc"
@@ -121,6 +125,7 @@ def test_resolve_override_by_concept_id():
     overrides = {"acide clavulanique": RS.Override(atc="", rxnorm_concept_id="500")}
     res = RS.Resolver(idx, {}, overrides).resolve(RS.Moiety("S_CLAV", "acide clavulanique"))
     assert res.status == "mapped" and res.reason == "override"
+    assert res.ingredient is not None
     assert res.ingredient.code == "clav1"
 
 
@@ -128,6 +133,7 @@ def test_resolve_override_by_atc(index):
     overrides = {"S_X": RS.Override(atc="N02BE01", rxnorm_concept_id="")}
     res = RS.Resolver(index, {}, overrides).resolve(RS.Moiety("S_X", "whatever"))
     assert res.status == "mapped" and res.reason == "override"
+    assert res.ingredient is not None
     assert res.individual_atc == "N02BE01" and res.ingredient.code == "161"
 
 

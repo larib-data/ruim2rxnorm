@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from ruim2rxnorm import normalize as N
 
-
 # --- normalize ---------------------------------------------------------------
 
 def test_accent_and_case_folding():

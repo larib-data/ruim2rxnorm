@@ -11,7 +11,6 @@ import csv
 
 from ruim2rxnorm.cli import main
 
-
 # --- map ---------------------------------------------------------------------
 
 def test_map_coveram_prints_both_ingredients(capsys):

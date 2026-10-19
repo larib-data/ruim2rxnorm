@@ -34,7 +34,13 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from . import resolve as _resolve
 from . import ruim_io
-from .resolve import Resolver, brand_moieties, build_substance_atc_index, load_athena_index, load_overrides
+from .resolve import (
+    Resolver,
+    brand_moieties,
+    build_substance_atc_index,
+    load_athena_index,
+    load_overrides,
+)
 
 # --- Output artifacts -------------------------------------------------------
 
@@ -243,6 +249,7 @@ def _resolve_all(athena_dir: Path, ruim_dir: Path, overrides) -> _BuildResult:
             res = resolver.resolve(m)
             status_by_sub[m.code] = res.status
             if res.status == "mapped":
+                assert res.ingredient is not None
                 mapped_groups.setdefault(res.ingredient.concept_id, []).append((m, res))
             else:
                 n_unmapped += 1

@@ -20,7 +20,6 @@ from ruim2rxnorm.rxrisk import (
     default_rxrisk_index,
 )
 
-
 # --- helpers -----------------------------------------------------------------
 
 

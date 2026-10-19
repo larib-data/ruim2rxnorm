@@ -35,6 +35,7 @@ publishes no per-condition weights).
 from __future__ import annotations
 
 import csv
+import io
 from dataclasses import dataclass
 from importlib import resources
 from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
@@ -107,8 +108,10 @@ class RxRiskIndex:
     def load(cls, package: str = _REFS_PACKAGE, name: str = RXRISK_MAP) -> "RxRiskIndex":
         """Load the shipped ``rxrisk_map.csv`` via :mod:`importlib.resources`."""
         conditions: List[RxRiskCondition] = []
-        with resources.files(package).joinpath(name).open(
-            "r", encoding="utf-8", newline=""
+        with io.TextIOWrapper(
+            resources.files(package).joinpath(name).open("rb"),
+            encoding="utf-8",
+            newline="",
         ) as fh:
             for raw in csv.DictReader(fh):
                 cond = RxRiskCondition.from_dict(raw)

@@ -142,7 +142,6 @@ def test_stcm_custom_source_vocabulary():
 def test_usagi_marks_mapped_and_unmapped():
     buf = io.StringIO()
     O.write_usagi_csv([_augmentin()], buf)
-    rows = {r["sourceName"] + r["conceptName"]: r for r in _read(buf.getvalue())}
     by_status = {r["mappingStatus"] for r in _read(buf.getvalue())}
     assert by_status == {"APPROVED", "UNCHECKED"}
 

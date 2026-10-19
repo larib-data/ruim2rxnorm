@@ -34,7 +34,7 @@ def strip_accents(text: str) -> str:
     return "".join(ch for ch in decomposed if not unicodedata.combining(ch))
 
 
-def normalize(text: str) -> str:
+def normalize(text: str | None) -> str:
     """Fold *text* to a canonical comparison key.
 
     Lower-cases, strips accents, normalizes apostrophes, drops any character

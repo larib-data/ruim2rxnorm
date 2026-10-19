@@ -25,7 +25,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Tuple
 
 from .cli import _iter_input_names
 from .rxrisk import (

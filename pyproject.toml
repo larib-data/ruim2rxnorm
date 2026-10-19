@@ -1,13 +1,13 @@
 [build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.8.0,<0.12.0"]
+build-backend = "uv_build"
 
 [project]
 name = "ruim2rxnorm"
 version = "0.1.0"
 description = "Map native French drug (brand) names to RxNorm ingredients via ATC, for OMOP CDM integration."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.13"
 license = { text = "MIT" }
 authors = [{ name = "ruim2rxnorm contributors" }]
 keywords = ["OMOP", "RxNorm", "ATC", "RUIM", "ANSM", "drug-mapping", "vocabulary"]
@@ -23,19 +23,31 @@ ruim2rxnorm-docs = "ruim2rxnorm.docs_build:main"
 # Development / build tooling, managed by uv as dependency groups (PEP 735).
 # `uv sync` installs `dev` by default; docs tooling is opt-in via `--group docs`.
 [dependency-groups]
-dev = ["pytest>=7"]
-docs = ["sphinx>=7"]
+dev = ["pytest>=9", "ruff>=0.15", "ty>=0.0.1a20"]
+docs = ["sphinx>=8", "furo>=2024.8.6", "myst-parser>=4"]
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["ruim2rxnorm*"]
+[tool.uv.build-backend]
+# Flat layout: the package sits at the repo root, not under src/.
+module-root = ""
+# The wheel ships the whole package directory, including the compact ETL-built
+# reference data (refs/*.csv, refs/*.json) and PROVENANCE.md. The source
+# vocabularies (Athena and the RUIM CSVs) are NOT vendored: they are downloaded
+# by the user and read solely by the offline build-refs ETL (see PROVENANCE.md).
 
-[tool.setuptools.package-data]
-# Ship only the compact ETL-built reference data. The source vocabularies (Athena
-# and the RUIM CSVs) are NOT vendored — they are downloaded by the user and read
-# solely by the offline build-refs ETL (see PROVENANCE.md / README).
-"ruim2rxnorm" = [
-    "refs/*.csv",
-    "refs/*.json",
-    "PROVENANCE.md",
-]
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.ty.src]
+include = ["ruim2rxnorm", "tests"]
+
+[tool.ty.analysis]
+# sphinx comes with the `docs` group (ruim2rxnorm.docs_build)
+allowed-unresolved-imports = ["sphinx", "sphinx.**"]
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+testpaths = ["tests"]
